@@ -1,5 +1,5 @@
 #
-# Cookbook Name:: hadoop
+# Cookbook Name:: pauls_hadoop
 # Recipe:: oozie
 #
 # Copyright (C) 2013-2014 Continuuity, Inc.
@@ -17,8 +17,8 @@
 # limitations under the License.
 #
 
-include_recipe 'hadoop::repo'
-include_recipe 'hadoop::oozie_client'
+include_recipe 'pauls_hadoop::repo'
+include_recipe 'pauls_hadoop::oozie_client'
 
 package 'oozie' do
   action :install

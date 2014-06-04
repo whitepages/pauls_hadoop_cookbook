@@ -1,5 +1,5 @@
 #
-# Cookbook Name:: hadoop
+# Cookbook Name:: pauls_hadoop
 # Recipe:: hadoop_hdfs_zkfc
 #
 # Copyright (C) 2013-2014 Continuuity, Inc.
@@ -17,9 +17,9 @@
 # limitations under the License.
 #
 
-include_recipe 'hadoop::default'
-include_recipe 'hadoop::hadoop_hdfs_ha_checkconfig'
-include_recipe 'hadoop::zookeeper'
+include_recipe 'pauls_hadoop::default'
+include_recipe 'pauls_hadoop::hadoop_hdfs_ha_checkconfig'
+include_recipe 'pauls_hadoop::zookeeper'
 
 package 'hadoop-hdfs-zkfc' do
   action :install

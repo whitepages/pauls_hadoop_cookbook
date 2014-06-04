@@ -1,5 +1,5 @@
 #
-# Cookbook Name:: hadoop
+# Cookbook Name:: pauls_hadoop
 # Recipe:: hadoop_yarn_resourcemanager
 #
 # Copyright (C) 2013-2014 Continuuity, Inc.
@@ -17,7 +17,7 @@
 # limitations under the License.
 #
 
-include_recipe 'hadoop::default'
+include_recipe 'pauls_hadoop::default'
 
 package 'hadoop-yarn-resourcemanager' do
   action :install

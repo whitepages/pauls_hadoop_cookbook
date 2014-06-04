@@ -1,5 +1,5 @@
 #
-# Cookbook Name:: hadoop
+# Cookbook Name:: pauls_hadoop
 # Recipe:: hadoop_hdfs_checkconfig
 #
 # Copyright (C) 2013-2014 Continuuity, Inc.

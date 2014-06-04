@@ -1,5 +1,5 @@
 #
-# Cookbook Name:: hadoop
+# Cookbook Name:: pauls_hadoop
 # Recipe:: hbase_rest
 #
 # Copyright (C) 2013-2014 Continuuity, Inc.
@@ -17,7 +17,7 @@
 # limitations under the License.
 #
 
-include_recipe 'hadoop::hbase'
+include_recipe 'pauls_hadoop::hbase'
 
 package 'hbase-rest' do
   action :install

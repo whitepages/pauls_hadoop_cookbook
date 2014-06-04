@@ -1,5 +1,5 @@
 #
-# Cookbook Name:: hadoop
+# Cookbook Name:: pauls_hadoop
 # Recipe:: hadoop_hdfs_journalnode
 #
 # Copyright (C) 2013-2014 Continuuity, Inc.
@@ -19,8 +19,8 @@
 
 # http://hadoop.apache.org/docs/current/hadoop-yarn/hadoop-yarn-site/HDFSHighAvailabilityWithQJM.html
 
-include_recipe 'hadoop::default'
-include_recipe 'hadoop::hadoop_hdfs_checkconfig'
+include_recipe 'pauls_hadoop::default'
+include_recipe 'pauls_hadoop::hadoop_hdfs_checkconfig'
 
 package 'hadoop-hdfs-journalnode' do
   action :install

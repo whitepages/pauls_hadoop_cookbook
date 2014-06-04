@@ -1,5 +1,5 @@
 #
-# Cookbook Name:: hadoop
+# Cookbook Name:: pauls_hadoop
 # Recipe:: hadoop_hdfs_namenode
 #
 # Copyright (C) 2013-2014 Continuuity, Inc.
@@ -17,8 +17,8 @@
 # limitations under the License.
 #
 
-include_recipe 'hadoop::default'
-include_recipe 'hadoop::hadoop_hdfs_checkconfig'
+include_recipe 'pauls_hadoop::default'
+include_recipe 'pauls_hadoop::hadoop_hdfs_checkconfig'
 
 package 'hadoop-hdfs-namenode' do
   action :install
@@ -48,8 +48,8 @@ end
 # Are we HA?
 if node['hadoop'].key?('hdfs_site') && node['hadoop']['hdfs_site'].key?('dfs.ha.automatic-failover.enabled') &&
   node['hadoop']['hdfs_site']['dfs.ha.automatic-failover.enabled'].to_s == 'true'
-  include_recipe 'hadoop::hadoop_hdfs_ha_checkconfig'
-  include_recipe 'hadoop::hadoop_hdfs_zkfc'
+  include_recipe 'pauls_hadoop::hadoop_hdfs_ha_checkconfig'
+  include_recipe 'pauls_hadoop::hadoop_hdfs_zkfc'
 
   execute 'hdfs-namenode-bootstrap-standby' do
     command 'hdfs namenode -bootstrapStandby'

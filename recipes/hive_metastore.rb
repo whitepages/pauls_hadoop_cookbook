@@ -1,5 +1,5 @@
 #
-# Cookbook Name:: hadoop
+# Cookbook Name:: pauls_hadoop
 # Recipe:: hive_metastore
 #
 # Copyright (C) 2013-2014 Continuuity, Inc.
@@ -17,7 +17,7 @@
 # limitations under the License.
 #
 
-include_recipe 'hadoop::hive'
+include_recipe 'pauls_hadoop::hive'
 
 package 'hive-metastore' do
   action :install

@@ -1,5 +1,5 @@
 #
-# Cookbook Name:: hadoop
+# Cookbook Name:: pauls_hadoop
 # Recipe:: hive_server
 #
 # Copyright (C) 2013-2014 Continuuity, Inc.
@@ -17,9 +17,9 @@
 # limitations under the License.
 #
 
-include_recipe 'hadoop::hive'
-include_recipe 'hadoop::zookeeper'
-include_recipe 'hadoop::hive_checkconfig'
+include_recipe 'pauls_hadoop::hive'
+include_recipe 'pauls_hadoop::zookeeper'
+include_recipe 'pauls_hadoop::hive_checkconfig'
 
 package 'hive-server2' do
   action :install

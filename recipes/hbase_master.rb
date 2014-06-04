@@ -1,5 +1,5 @@
 #
-# Cookbook Name:: hadoop
+# Cookbook Name:: pauls_hadoop
 # Recipe:: hbase_master
 #
 # Copyright (C) 2013-2014 Continuuity, Inc.
@@ -17,8 +17,8 @@
 # limitations under the License.
 #
 
-include_recipe 'hadoop::hbase'
-include_recipe 'hadoop::hbase_checkconfig'
+include_recipe 'pauls_hadoop::hbase'
+include_recipe 'pauls_hadoop::hbase_checkconfig'
 
 package 'hbase-master' do
   action :install

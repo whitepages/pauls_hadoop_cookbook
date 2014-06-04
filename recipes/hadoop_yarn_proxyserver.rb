@@ -1,5 +1,5 @@
 #
-# Cookbook Name:: hadoop
+# Cookbook Name:: pauls_hadoop
 # Recipe:: hadoop_yarn_proxyserver
 #
 # Copyright (C) 2013-2014 Continuuity, Inc.
@@ -17,7 +17,7 @@
 # limitations under the License.
 #
 
-include_recipe 'hadoop::default'
+include_recipe 'pauls_hadoop::default'
 
 if node['hadoop'].key?('yarn_site') && node['hadoop']['yarn_site'].key?('yarn.web-proxy.address')
   Chef::Log.info("Setting up YARN Web Proxy at #{node['hadoop']['yarn_site']['yarn.web-proxy.address']}")

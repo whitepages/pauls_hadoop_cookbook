@@ -1,5 +1,5 @@
 #
-# Cookbook Name:: hadoop
+# Cookbook Name:: pauls_hadoop
 # Recipe:: hbase
 #
 # Copyright (C) 2013-2014 Continuuity, Inc.
@@ -17,8 +17,8 @@
 # limitations under the License.
 #
 
-include_recipe 'hadoop::repo'
-include_recipe 'hadoop::zookeeper'
+include_recipe 'pauls_hadoop::repo'
+include_recipe 'pauls_hadoop::zookeeper'
 
 package 'hbase' do
   action :install
