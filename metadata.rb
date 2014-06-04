@@ -1,4 +1,4 @@
-name             'hadoop'
+name             'pauls_hadoop'
 maintainer       'Continuuity, Inc.'
 maintainer_email 'ops@continuuity.com'
 license          'Apache 2.0'
@@ -9,7 +9,7 @@ version          '1.1.0'
 depends 'yum', '>= 3.0'
 depends 'apt'
 
-recommends 'java', '>= 1.21.2'
+recommends 'app_breaking_java', '>= 1.21.2'
 
 %w(centos debian redhat scientific ubuntu).each do |os|
   supports os
