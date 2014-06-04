@@ -2,7 +2,7 @@ site :opscode
 
 group :integration do
   cookbook 'minitest-handler'
-  cookbook 'java', '>= 1.21.2'
+  cookbook 'app_breaking_java', '>= 1.21.2'
 end
 
 metadata
