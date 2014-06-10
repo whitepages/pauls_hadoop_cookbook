@@ -20,8 +20,10 @@
 include_recipe 'pauls_hadoop::default'
 include_recipe 'pauls_hadoop::hadoop_hdfs_checkconfig'
 
-package 'hadoop-hdfs-namenode' do
-  action :install
+unless node['hadoop']['is_legacy']
+  package 'hadoop-hdfs-namenode' do
+    action :install
+  end
 end
 
 dfs_name_dirs =
@@ -67,14 +69,14 @@ if node['hadoop'].key?('hdfs_site') && node['hadoop']['hdfs_site'].key?('dfs.ha.
 end
 
 execute 'hdfs-namenode-format' do
-  command 'hdfs namenode -format -nonInteractive' + (node['hadoop']['force_format'] ? ' -force' : '')
+  command 'hadoop namenode -format -nonInteractive' + (node['hadoop']['force_format'] ? ' -force' : '')
   action :nothing
   group 'hdfs'
   user 'hdfs'
 end
 
-service 'hadoop-hdfs-namenode' do
-  status_command 'service hadoop-hdfs-namenode status'
+service 'hadoop-namenode' do
+  status_command 'service hadoop-namenode status'
   supports [:restart => true, :reload => false, :status => true]
   action :nothing
 end

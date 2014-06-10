@@ -19,8 +19,10 @@
 
 include_recipe 'pauls_hadoop::default'
 
-package 'hadoop-mapreduce-historyserver' do
-  action :install
+unless node['hadoop']['is_legacy']
+  package 'hadoop-mapreduce-historyserver' do
+    action :install
+  end
 end
 
 service 'hadoop-mapreduce-historyserver' do

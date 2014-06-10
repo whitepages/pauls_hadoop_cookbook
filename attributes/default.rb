@@ -28,3 +28,8 @@ default['hadoop']['core_site']['fs.defaultFS'] = "hdfs://#{node['fqdn']}"
 # yarn-site.xml settings
 ###
 default['hadoop']['yarn_site']['yarn.resourcemanager.hostname'] = node['fqdn']
+
+default['hadoop']['legacy'] = {
+    :download_url => 'http://archive.apache.org/dist/hadoop/core/hadoop-1.2.1/hadoop_1.2.1-1_x86_64.deb',
+    :tmp_dir => File.join(Dir.tmpdir, 'hadoop-1.2.1.deb')
+}

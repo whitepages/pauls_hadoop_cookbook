@@ -19,8 +19,45 @@
 
 include_recipe 'pauls_hadoop::repo'
 
-package 'hadoop-client' do
-  action :install
+if node['hadoop']['distribution_version'] == '1.2.1'
+  node.default['hadoop']['is_legacy'] = true
+  dpkg_package 'hadoop' do
+    action :install
+    source node['hadoop']['legacy']['tmp_dir']
+    version '1.2.1'
+  end
+
+  #The package for 1.2.1 is terrible, so we need to template some of the files to fix them
+
+  cookbook_file 'hadoop-env.sh' do
+    path '/etc/default/hadoop-env.sh'
+    action :create
+    owner 'root'
+    group 'root'
+    mode '0755'
+  end
+
+  [
+   'hadoop-datanode',
+   'hadoop-historyserver',
+   'hadoop-namenode',
+   'hadoop-jobtracker',
+   'hadoop-secondarynamenode',
+   'hadoop-tasktracker'
+  ].each do |f|
+    cookbook_file f do
+      path "/etc/init.d/#{f}"
+      action :create
+      owner 'root'
+      group 'root'
+      mode '0755'
+    end
+  end
+
+else
+  package 'hadoop-client' do
+    action :install
+  end
 end
 
 hadoop_conf_dir = "/etc/hadoop/#{node['hadoop']['conf_dir']}"

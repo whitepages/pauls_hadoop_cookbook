@@ -20,8 +20,10 @@
 include_recipe 'pauls_hadoop::default'
 include_recipe 'pauls_hadoop::hadoop_hdfs_checkconfig'
 
-package 'hadoop-hdfs-datanode' do
-  action :install
+unless node['hadoop']['is_legacy']
+  package 'hadoop-hdfs-datanode' do
+    action :install
+  end
 end
 
 dfs_data_dirs =
@@ -34,7 +36,9 @@ dfs_data_dirs =
   end
 
 dfs_data_dir_perm =
-  if node['hadoop'].key?('hdfs_site') && node['hadoop']['hdfs_site'].key?('dfs.datanode.data.dir.perm')
+  if node['hadoop']['is_legacy']
+    '0755'
+  elsif node['hadoop'].key?('hdfs_site') && node['hadoop']['hdfs_site'].key?('dfs.datanode.data.dir.perm')
     node['hadoop']['hdfs_site']['dfs.datanode.data.dir.perm']
   elsif node['hadoop'].key?('hdfs_site') && node['hadoop']['hdfs_site'].key?('dfs.data.dir.perm')
     node['hadoop']['hdfs_site']['dfs.data.dir.perm']
@@ -55,8 +59,8 @@ dfs_data_dirs.split(',').each do |dir|
   end
 end
 
-service 'hadoop-hdfs-datanode' do
-  status_command 'service hadoop-hdfs-datanode status'
+service 'hadoop-datanode' do
+  status_command 'service hadoop-datanode status'
   supports [:restart => true, :reload => false, :status => true]
   action :nothing
 end
