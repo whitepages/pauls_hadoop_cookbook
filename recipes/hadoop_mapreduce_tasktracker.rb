@@ -31,3 +31,10 @@ service 'hadoop-0.20-mapreduce-tasktracker' do
   action :nothing
   only_if { node['hadoop']['distribution'] == 'cdh' }
 end
+
+service 'hadoop-tasktracker' do
+  status_command 'service hadoop-tasktracker status'
+  supports [:restart => true, :reload => false, :status => true]
+  action :nothing
+  only_if { node['hadoop']['is_legacy'] }
+end

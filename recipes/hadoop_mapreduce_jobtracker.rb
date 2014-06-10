@@ -26,16 +26,21 @@ include_recipe 'pauls_hadoop::default'
 # mapreduce.cluster.temp.dir = #{hadoop_tmp_dir}/mapred/temp
 
 # Only CDH supports a JobTracker package
-unless node['hadoop']['is_legacy']
-  package 'hadoop-0.20-mapreduce-jobtracker' do
-    action :install
-    only_if { node['hadoop']['distribution'] == 'cdh' }
-  end
+package 'hadoop-0.20-mapreduce-jobtracker' do
+  action :install
+  only_if { node['hadoop']['distribution'] == 'cdh' }
+end
 
-  service 'hadoop-0.20-mapreduce-jobtracker' do
-    status_command 'service hadoop-0.20-mapreduce-jobtracker status'
-    supports [:restart => true, :reload => false, :status => true]
-    action :nothing
-    only_if { node['hadoop']['distribution'] == 'cdh' }
-  end
+service 'hadoop-0.20-mapreduce-jobtracker' do
+  status_command 'service hadoop-0.20-mapreduce-jobtracker status'
+  supports [:restart => true, :reload => false, :status => true]
+  action :nothing
+  only_if { node['hadoop']['distribution'] == 'cdh' }
+end
+
+service 'hadoop-jobtracker' do
+  status_command 'service hadoop-jobtracker status'
+  supports [:restart => true, :reload => false, :status => true]
+  action :nothing
+  only_if { node['hadoop']['is_legacy'] }
 end
