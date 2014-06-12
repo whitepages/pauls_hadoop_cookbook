@@ -38,6 +38,24 @@ service 'hadoop-0.20-mapreduce-jobtracker' do
   only_if { node['hadoop']['distribution'] == 'cdh' }
 end
 
+mapred_dirs =
+    if node['hadoop'].key?('mapred_site') && node['hadoop']['mapred_site'].key?('mapred.local.dir')
+      node['hadoop']['mapred_site']['mapred.local.dir']
+    else
+      'file://tmp/hadoop-mapred/local'
+    end
+
+
+mapred_dirs.split(',').each do |dir|
+  directory dir.gsub('file://', '') do
+    mode '0755'
+    owner 'mapred'
+    group 'mapred'
+    action :create
+    recursive true
+  end
+end
+
 service 'hadoop-jobtracker' do
   status_command 'service hadoop-jobtracker status'
   supports [:restart => true, :reload => false, :status => true]
