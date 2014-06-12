@@ -76,6 +76,8 @@ execute 'hdfs-namenode-format' do
 end
 
 service 'hadoop-namenode' do
+  ENV['JAVA_HOME'] = '/usr/lib/jvm/java-7-openjdk-amd64'
+  ENV['HADOOP_CONF_DIR'] = '/etc/hadoop/conf'
   status_command 'service hadoop-namenode status'
   supports [:restart => true, :reload => false, :status => true]
   action :nothing
