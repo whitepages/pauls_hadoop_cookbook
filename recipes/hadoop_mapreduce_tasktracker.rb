@@ -32,6 +32,34 @@ service 'hadoop-0.20-mapreduce-tasktracker' do
   only_if { node['hadoop']['distribution'] == 'cdh' }
 end
 
+mapred_fs_dirs =
+    if node['hadoop'].key?('mapred_site') && node['hadoop']['mapred_site'].key?('mapred.local.dir')
+      node['hadoop']['mapred_site']['mapred.local.dir']
+    else
+      'file://tmp/hadoop-mapred/local'
+    end
+
+
+mapred_fs_dirs.split(',').each do |dir|
+  directory dir.gsub('file://', '') do
+    mode '0755'
+    owner 'mapred'
+    group 'mapred'
+    action :create
+    recursive true
+  end
+end
+
+execute 'make-hdfs-mapred-folders' do
+  ENV['JAVA_HOME'] = '/usr/lib/jvm/java-7-openjdk-amd64'
+  ENV['HADOOP_CONF_DIR'] = '/etc/hadoop/conf'
+  command "hadoop fs -mkdir /user/mapred/system && hadoop fs -chmod -R 755 /user/mapred && hadoop fs -chown -R mapred /user/mapred"
+  action :nothing
+  group 'hdfs'
+  user 'hdfs'
+  not_if 'hadoop fs -test -d /user/mapred/system', :user => 'hdfs'
+end
+
 service 'hadoop-tasktracker' do
   status_command 'service hadoop-tasktracker status'
   supports [:restart => true, :reload => false, :status => true]
