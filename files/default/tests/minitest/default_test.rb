@@ -1,7 +1,6 @@
 require File.expand_path('../support/helpers', __FILE__)
 
 describe 'hadoop::default' do
-
   include Helpers::Hadoop
 
   # Example spec tests can be found at http://git.io/Fahwsw
@@ -26,14 +25,12 @@ describe 'hadoop::default' do
 
   it 'creates hadoop config files' do
     %w(capacity_scheduler core_site hadoop_policy hdfs_site mapred_site yarn_site).each do |sitefile|
-      if node['hadoop'].key? sitefile
-        file("/etc/hadoop/#{node['hadoop']['conf_dir']}/#{sitefile.gsub('_', '-')}.xml")
-          .must_exist
-          .with(:owner, 'root')
-          .and(:group, 'root')
-          .and(:mode, '0644')
-      end
+      next unless node['hadoop'].key?(sitefile)
+      file("/etc/hadoop/#{node['hadoop']['conf_dir']}/#{sitefile.gsub('_', '-')}.xml")
+        .must_exist
+        .with(:owner, 'root')
+        .and(:group, 'root')
+        .and(:mode, '0644')
     end
   end
-
 end

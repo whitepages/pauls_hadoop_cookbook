@@ -1,22 +1,19 @@
 ###
 # cookbook settings
 ###
-# Supported: cdh, hdp
+# Supported: cdh, hdp, bigtop
 default['hadoop']['distribution'] = 'hdp'
-default['hadoop']['distribution_version'] =
-  if node['hadoop']['distribution'] == 'hdp'
-    '2.0'
-  elsif node['hadoop']['distribution'] == 'cdh'
-    '5'
-  end
 
 default['hadoop']['force_format'] = false
 
 # Default: conf.chef
 default['hadoop']['conf_dir'] = 'conf.chef'
+default['flume']['conf_dir'] = node['hadoop']['conf_dir']
 default['hbase']['conf_dir'] = node['hadoop']['conf_dir']
 default['hive']['conf_dir'] = node['hadoop']['conf_dir']
 default['oozie']['conf_dir'] = node['hadoop']['conf_dir']
+default['spark']['conf_dir'] = node['hadoop']['conf_dir']
+default['tez']['conf_dir'] = node['hadoop']['conf_dir']
 default['zookeeper']['conf_dir'] = node['hadoop']['conf_dir']
 
 ###

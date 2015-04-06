@@ -1,8 +1,8 @@
 #
-# Cookbook Name:: pauls_hadoop
-# Recipe:: hadoop_hdfs_checkconfig
+# Cookbook Name:: hadoop
+# Recipe:: _system_tuning
 #
-# Copyright (C) 2013-2014 Continuuity, Inc.
+# Copyright © 2013-2015 Cask Data, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,9 +17,21 @@
 # limitations under the License.
 #
 
-# For HDFS functionality, we require fs.defaultFS property to be set
-if node['hadoop'].key?('core_site') && node['hadoop']['core_site'].key?('fs.defaultFS')
-  Chef::Log.info("HDFS NameNode configured at #{node['hadoop']['core_site']['fs.defaultFS']}")
+include_recipe 'sysctl::default'
+# Disable swapping
+sysctl_param 'vm.swappiness' do
+  value 0
+end
+
+case node['platform_family']
+when 'debian', 'suse'
+  thp_defrag = '/sys/kernel/mm/transparent_hugepage/defrag'
+when 'rhel'
+  thp_defrag = '/sys/kernel/mm/redhat_transparent_hugepage/defrag'
 else
-  Chef::Application.fatal!("HDFS NameNode must be configured! Set default['hadoop']['core_site']['fs.defaultFS'] to the NameNode.")
+  thp_defrag = '/dev/null'
+end
+execute 'disable-transparent-hugepage-compaction' do
+  command "echo never > #{thp_defrag}"
+  not_if "grep '\[never\]' #{thp_defrag}"
 end

@@ -2,7 +2,7 @@
 # Cookbook Name:: pauls_hadoop
 # Recipe:: hadoop_hdfs_namenode
 #
-# Copyright (C) 2013-2014 Continuuity, Inc.
+# Copyright © 2013-2015 Cask Data, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,11 +18,26 @@
 #
 
 include_recipe 'pauls_hadoop::default'
-include_recipe 'pauls_hadoop::hadoop_hdfs_checkconfig'
+include_recipe 'pauls_hadoop::_hadoop_hdfs_checkconfig'
+include_recipe 'pauls_hadoop::_system_tuning'
+pkg = 'hadoop-hdfs-namenode'
 
 unless node['hadoop']['is_legacy']
-  package 'hadoop-hdfs-namenode' do
-    action :install
+  package pkg do
+    action :nothing
+  end
+end
+
+# Hack to prevent auto-start of services, see COOK-26
+ruby_block "package-#{pkg}" do
+  block do
+    begin
+      Chef::Resource::RubyBlock.send(:include, Hadoop::Helpers)
+      policy_rcd('disable') if node['platform_family'] == 'debian'
+      resources("package[#{pkg}]").run_action(:install)
+    ensure
+      policy_rcd('enable') if node['platform_family'] == 'debian'
+    end
   end
 end
 
@@ -69,15 +84,16 @@ if node['hadoop'].key?('hdfs_site') && node['hadoop']['hdfs_site'].key?('dfs.ha.
 end
 
 execute 'hdfs-namenode-format' do
-  command 'hadoop namenode -format -nonInteractive' + (node['hadoop']['force_format'] ? ' -force' : '')
+  command 'hdfs namenode -format -nonInteractive' + (node['hadoop']['force_format'] ? ' -force' : '')
   action :nothing
   group 'hdfs'
   user 'hdfs'
 end
 
-service 'hadoop-namenode' do
+service pkg do
   ENV['JAVA_HOME'] = '/usr/lib/jvm/java-7-openjdk-amd64'
   ENV['HADOOP_CONF_DIR'] = '/etc/hadoop/conf'
+  status_command "service #{pkg} status"
   status_command 'service hadoop-namenode status'
   supports [:restart => true, :reload => false, :status => true]
   action :nothing

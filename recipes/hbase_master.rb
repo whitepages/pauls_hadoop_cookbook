@@ -2,7 +2,7 @@
 # Cookbook Name:: pauls_hadoop
 # Recipe:: hbase_master
 #
-# Copyright (C) 2013-2014 Continuuity, Inc.
+# Copyright © 2013-2015 Cask Data, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,16 +18,33 @@
 #
 
 include_recipe 'pauls_hadoop::hbase'
-include_recipe 'pauls_hadoop::hbase_checkconfig'
+include_recipe 'pauls_hadoop::_hbase_checkconfig'
+include_recipe 'pauls_hadoop::_system_tuning'
+pkg = 'hbase-master'
 
-package 'hbase-master' do
-  action :install
+package pkg do
+  action :nothing
+end
+
+# Hack to prevent auto-start of services, see COOK-26
+ruby_block "package-#{pkg}" do
+  block do
+    begin
+      Chef::Resource::RubyBlock.send(:include, Hadoop::Helpers)
+      policy_rcd('disable') if node['platform_family'] == 'debian'
+      resources("package[#{pkg}]").run_action(:install)
+    ensure
+      policy_rcd('enable') if node['platform_family'] == 'debian'
+    end
+  end
 end
 
 # HBase can use a local directory or an HDFS directory for its rootdir...
 # if HDFS, create execute block with action :nothing
 # else create the local directory when file://
-if node['hbase']['hbase_site']['hbase.rootdir'] =~ %r{^hdfs://} || (node['hbase']['hbase_site']['hbase.rootdir'] =~ /^\// && node['hbase']['hbase_site']['hbase.cluster.distributed'].to_s == 'true')
+if node['hbase'].key?('hbase_site') && node['hbase']['hbase_site'].key?('hbase.rootdir') &&
+   node['hbase']['hbase_site']['hbase.rootdir'] =~ %r{^hdfs://} || (node['hbase']['hbase_site']['hbase.rootdir'] =~ /^\// &&
+  node['hbase']['hbase_site']['hbase.cluster.distributed'].to_s == 'true')
   execute 'hbase-hdfs-rootdir' do
     command "hdfs dfs -mkdir -p #{node['hbase']['hbase_site']['hbase.rootdir']} && hdfs dfs -chown hbase #{node['hbase']['hbase_site']['hbase.rootdir']}"
     timeout 300
@@ -50,7 +67,7 @@ end
 
 # https://hbase.apache.org/book/hbase.secure.bulkload.html
 bulkload_dir =
-  if node['hbase']['hbase_site'].key? 'hbase.bulkload.staging.dir'
+  if node['hbase']['hbase_site'].key?('hbase.bulkload.staging.dir')
     node['hbase']['hbase_site']['hbase.bulkload.staging.dir']
   else
     '/tmp/hbase-staging'
@@ -67,8 +84,8 @@ execute 'hbase-bulkload-stagingdir' do
   action :nothing
 end
 
-service 'hbase-master' do
-  status_command 'service hbase-master status'
+service pkg do
+  status_command "service #{pkg} status"
   supports [:restart => true, :reload => false, :status => true]
   action :nothing
 end
